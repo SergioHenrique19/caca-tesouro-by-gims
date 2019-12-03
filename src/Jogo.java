@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Classe principal que representa o jogo de caça ao tesouro, onde o jogador faz
+ * uso de todos os recursos do jogo. Esta classe cria e inicializa todos as
+ * outras: cria os ambientes, cria o analisador, configura as dicas, tesouro e
+ * chave mestra. Também, avalia e executa os comandos que o analisador retorna.
+ */
 public class Jogo {
 	private Analisador analisador;
 	private Ambiente ambienteAtual;
@@ -9,6 +15,10 @@ public class Jogo {
 	int chave;
 	int movimentos;
 
+	/**
+	 * Cria o jogo e inicializa todo o mapa e o analisador de comandos. Também,
+	 * configura, aleatoriamente, as tentavivas do jogador.
+	 */
 	public Jogo() {
 		gerador = new Random();
 		criarAmbientes();
@@ -17,9 +27,14 @@ public class Jogo {
 		chave = 0;
 	}
 
-	private void criarAmbientes() {
+	/**
+	 * Método que configura todos os ambientes e ajusta suas saídas. Além disso,
+	 * configura as localizações dos itens: dicas, chave mestra e tesouro.
+	 */
+	public void criarAmbientes() {
 		ambientes = new ArrayList<Ambiente>();
 
+		// Cria os ambientes e adiciona-os ao HashMap
 		ambientes.add(new Ambiente(" no Escritorio", "Escritorio"));
 		ambientes.add(new Ambiente(" na Sala de TV", "Sala de TV"));
 		ambientes.add(new Ambiente(" na Sala de Jantar", "Sala de Jantar"));
@@ -33,6 +48,7 @@ public class Jogo {
 		ambientes.add(new Ambiente(" no Banheiro 1", "Banheiro 1"));
 		ambientes.add(new Ambiente(" no Banheiro 2", "Banheiro 2"));
 
+		// Configura as saídas dos ambientes
 		ambientes.get(0).ajustarSaidas("SalaTV", ambientes.get(1));
 		ambientes.get(1).ajustarSaidas("Escritorio", ambientes.get(0));
 		ambientes.get(1).ajustarSaidas("SalaJantar", ambientes.get(2));
@@ -58,22 +74,29 @@ public class Jogo {
 		ambientes.get(10).ajustarSaidas("Corredor", ambientes.get(5));
 		ambientes.get(11).ajustarSaidas("Quarto3", ambientes.get(8));
 
+		// Configura o ambiente em que inicia-se o jogador
 		ambienteAtual = ambientes.get(1);
 
+		// Configura a localização/ambientes dos itens
 		int randomDica1 = gerador.nextInt(12);
 		int randomDica2 = gerador.nextInt(12);
 		int randomChave = gerador.nextInt(12);
 		int randomTesouro = gerador.nextInt(12);
 
+		// Adiciona os itens aos seus ambientes
 		ambientes.get(randomDica1).setDica1(true);
 		ambientes.get(randomDica2).setDica2(true);
 		ambientes.get(randomChave).setChave(true);
 		ambientes.get(randomTesouro).setTesouro(true);
 	}
 
+	/**
+	 * Rotina principal do jogo. Permanece em loop até que o jogo termine.
+	 */
 	public void jogar() {
 		imprimirBoasVindas();
 
+		// Loop que analisa os comandos digitados pelo jogador
 		boolean terminado = false;
 		while (!terminado) {
 			Comando comando = analisador.pegarComando();
@@ -83,14 +106,20 @@ public class Jogo {
 		System.out.println("Obrigado por jogar. Ate mais!");
 	}
 
-	private void imprimirLocalizacaoAtual() {
+	/**
+	 * Método que apresenta a localização/ambiente em que o jogador se encontra.
+	 */
+	public void imprimirLocalizacaoAtual() {
 		System.out.println("Voce esta " + ambienteAtual.getDescricao());
 		System.out.println("Voce tem " + movimentos + " movimentos.");
 		System.out.print(ambienteAtual.getSaidas());
 		System.out.println();
 	}
 
-	private void imprimirBoasVindas() {
+	/**
+	 * Método que apresenta a mensagem de boas-vindas do jogo ao jogador.
+	 */
+	public void imprimirBoasVindas() {
 		System.out.println();
 		System.out.println("Bem-vindo a Caca ao Tesouro!");
 		System.out.println("Caca ao Tesouro e um novo jogo de aventura, incrivelmente bacana.");
@@ -100,7 +129,14 @@ public class Jogo {
 		imprimirLocalizacaoAtual();
 	}
 
-	private boolean processarComando(Comando comando) {
+	/**
+	 * Método que processa o comando, analisando se é um dos comandos válidos e
+	 * realizando a ação configurar para tal comando válido.
+	 * 
+	 * @param comando Comando digitado pelo jogador
+	 * @return true, se o comando for válido, ou false, caso contrário
+	 */
+	public boolean processarComando(Comando comando) {
 		boolean querSair = false;
 
 		if (comando.ehDesconhecido()) {
@@ -128,7 +164,11 @@ public class Jogo {
 		return querSair;
 	}
 
-	private void imprimirAjuda() {
+	/**
+	 * Método que imprime ajuda quando o usuário digita "ajuda", apresentando os
+	 * comandos válidos/disponíveis.
+	 */
+	public void imprimirAjuda() {
 		System.out.println("Você esta perdido. Você está sozinho. Você caminha");
 		System.out.println("pela casa.");
 		System.out.println();
@@ -136,7 +176,14 @@ public class Jogo {
 		System.out.println(analisador.getComandos());
 	}
 
-	private void irParaAmbiente(Comando comando) {
+	/**
+	 * Método que analisa a segunda palavra do comando, representando para qual
+	 * ambiente o jogador deseja ir, se for possível. Também, verifica se o jogador
+	 * fará uso da chave mestra e se a porta está emperrada ou não.
+	 * 
+	 * @param comando Ambiente para qual o usuário deseja ir
+	 */
+	public void irParaAmbiente(Comando comando) {
 		if (!comando.temSegundaPalavra()) {
 			System.out.println("Ir pra onde?");
 			return;
@@ -152,6 +199,7 @@ public class Jogo {
 		} else {
 			boolean usouChave = false;
 
+			// Controla o uso da chave mestra
 			if (chave != 0) {
 				System.out.println("Você deseja usar a chave-mestra? (sim/nao)");
 				String confirmacao = analisador.pegarString();
@@ -161,6 +209,8 @@ public class Jogo {
 				}
 			}
 
+			// Caso o jogador não use a chave mestra, verificar, aleatoriamente, se a porta
+			// está emperrada ou não
 			if (!usouChave) {
 				boolean chance = gerador.nextBoolean();
 
@@ -170,6 +220,8 @@ public class Jogo {
 				}
 			}
 
+			// Caso o ambiente possua a dica 1, apresentar ao jogador e configurar sua
+			// mensagem
 			if (proximoAmbiente.getDica1()) {
 				proximoAmbiente.setDica1(false);
 				boolean tesouro = true;
@@ -182,6 +234,8 @@ public class Jogo {
 				} while (tesouro);
 			}
 
+			// Caso o ambiente possua a dica 2, apresentar ao jogador e configurar sua
+			// mensagem
 			if (proximoAmbiente.getDica2()) {
 				proximoAmbiente.setDica2(false);
 				for (Ambiente a : ambientes) {
@@ -192,6 +246,7 @@ public class Jogo {
 				}
 			}
 
+			// Caso o ambiente possua a chave mestra, apresentá-la ao jogador
 			if (proximoAmbiente.getChave()) {
 				proximoAmbiente.setChave(false);
 				int vidaChave = gerador.nextInt(12);
@@ -201,6 +256,7 @@ public class Jogo {
 
 			ambienteAtual = proximoAmbiente;
 
+			// Caso o jogador não usar a chave, descontar 1 ponto dos movimentos permitidos
 			if (!usouChave) {
 				movimentos--;
 			}
@@ -210,7 +266,13 @@ public class Jogo {
 
 	}
 
-	private int usarChave() {
+	/**
+	 * Método que controla o uso da chave mestra, verificando se ela ainda pode ser
+	 * utilizada, se puder, descontar do número de tentativas permitidas de uso.
+	 * 
+	 * @return Desconta 1 do número de tentativas do uso da chave mestra
+	 */
+	public int usarChave() {
 		if (chave == 1) {
 			System.out
 					.println("Voce utilizou a chave com sucesso. Infelizmente, ela quebrou, e voce nao podera usa-la novamente.");
@@ -223,7 +285,13 @@ public class Jogo {
 		return chave;
 	}
 
-	private boolean sair(Comando comando) {
+	/**
+	 * Método que valida a saída do jogador do jogo.
+	 * 
+	 * @param comando Comando a ser analisado
+	 * @return true, se o comando digitado for "sair", ou false, caso contrário
+	 */
+	public boolean sair(Comando comando) {
 		if (comando.temSegundaPalavra()) {
 			System.out.println("Sair o que?");
 			return false;
@@ -232,11 +300,21 @@ public class Jogo {
 		}
 	}
 
-	private void observar() {
+	/**
+	 * Método que apresenta descrição do ambiente atual para o usuário ao digitar
+	 * "obervar".
+	 */
+	public void observar() {
 		imprimirLocalizacaoAtual();
 	}
 
-	private boolean detonar() {
+	/**
+	 * Método responsável pelo uso da dinamite, utilizada para encontrar o tesouro,
+	 * caso o jogador esteja no ambiente indicado.
+	 * 
+	 * @return true, se o jogador encontrou o tesouro, ou false, caso contrário
+	 */
+	public boolean detonar() {
 		if (ambienteAtual.getTesouro()) {
 			System.out.println("Parabens, voce ganhou!!!");
 		} else {
