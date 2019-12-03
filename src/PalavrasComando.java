@@ -2,7 +2,6 @@
  * Classe que "contem" todos os comandos válidos do jogo. Armazena todos as
  * palavras comandos válidos e valida os comandos a serem analisados.
  */
-
 public class PalavrasComando {
 	private static final String[] comandosValidos = { "ir", "sair", "ajuda", "observar", "detonar" };
 
@@ -14,7 +13,7 @@ public class PalavrasComando {
 	 * verifica se é igual a algum dos comandos armazenados na classe.
 	 * 
 	 * @param umaString String correspondente ao comando digitado pelo usuário
-	 * @return boolean - true se o comando for válido ou false caso contrário.
+	 * @return boolean - true se o comando for válido ou false caso contrário
 	 */
 	public boolean ehComando(String umaString) {
 		for (int i = 0; i < comandosValidos.length; i++) {
