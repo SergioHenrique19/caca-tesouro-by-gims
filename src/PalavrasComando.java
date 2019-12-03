@@ -1,48 +1,38 @@
-
 /**
- * Esta classe eh parte da aplicacao "World of Zuul".
- * "World of Zuul" eh um jogo de aventura muito simples, baseado em texto.  
- * 
- * Essa classe guarda uma enumeracao de todos os comandos conhecidos do
- * jogo. Ela eh usada no reconhecimento de comandos como eles sao digitados.
- *
- * @author  Michael Kölling and David J. Barnes (traduzido por Julio Cesar Alves)
- * @version 2011.07.31 (2016.02.01)
+ * Classe que "contem" todos os comandos válidos do jogo. Armazena todos as
+ * palavras comandos válidos e valida os comandos a serem analisados.
  */
 
-public class PalavrasComando
-{
-	// um vetor constante que guarda todas as palavras de comandos validas
-	private static final String[] comandosValidos = {
-		"ir", "sair", "ajuda", "observar", "detonar"
-	};
+public class PalavrasComando {
+	private static final String[] comandosValidos = { "ir", "sair", "ajuda", "observar", "detonar" };
 
-	/**
-	 * Construtor - inicializa as palavras de comando.
-	 */
-	public PalavrasComando()
-	{
-		// nada a fazer no momento...
+	public PalavrasComando() {
 	}
 
 	/**
-	 * Verifica se uma dada String eh uma palavra de comando valida. 
-	 * @return true se a string dada eh um comando valido,
-	 * false se nao eh.
+	 * Metodo para verificar se o comando digitado é válido. Ele recebe o comando e
+	 * verifica se é igual a algum dos comandos armazenados na classe.
+	 * 
+	 * @param umaString String correspondente ao comando digitado pelo usuário
+	 * @return boolean - true se o comando for válido ou false caso contrário.
 	 */
-	public boolean ehComando(String umaString)
-	{
-		for(int i = 0; i < comandosValidos.length; i++) {
-			if(comandosValidos[i].equals(umaString))
+	public boolean ehComando(String umaString) {
+		for (int i = 0; i < comandosValidos.length; i++) {
+			if (comandosValidos[i].equals(umaString))
 				return true;
 		}
-		// se chegamos aqui, a string nao foi encontrada nos comandos.
+
 		return false;
 	}
-	
-	public String getComandos(){
+
+	/**
+	 * Metodo para apresentar todos os comandos válidos.
+	 * 
+	 * @return comandos - vetor de comandos válidos.
+	 */
+	public String getComandos() {
 		String comandos = "";
-		for (String comando : comandosValidos){
+		for (String comando : comandosValidos) {
 			comandos = comandos + comando + " ";
 		}
 		return comandos;
