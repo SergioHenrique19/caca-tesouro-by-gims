@@ -1,1 +1,0 @@
-memberSearchIndex = [{"p":"<Unnamed>","c":"PalavrasComando","l":"ehComando(String)","url":"ehComando(java.lang.String)"},{"p":"<Unnamed>","c":"PalavrasComando","l":"getComandos()"},{"p":"<Unnamed>","c":"PalavrasComando","l":"PalavrasComando()","url":"%3Cinit%3E()"}]
