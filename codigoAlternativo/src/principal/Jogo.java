@@ -143,7 +143,8 @@ public class Jogo {
         
         
         //Criando a chave mestra
-        item = new ChaveMestra(gerador.nextInt(12) + 1); //soma 1 pois o número aleatório vai de 0 a 11
+        //Soma 1 pois o número aleatório vai de 0 a 11
+        item = new ChaveMestra(gerador.nextInt(12) + 1); 
         posicao = gerador.nextInt(numAmbientes);
         ambientes.get(posicao).inserirItemVisivel(item);
         textoArquivo += "A Chave Mestra está no(a): " + ambientes.get(posicao).getNome() + "\r\n";
@@ -162,22 +163,20 @@ public class Jogo {
         //Loop que analisa os comandos digitados pelo jogador
         boolean terminado = false;
         while (!terminado) {
-            Comando comando = analisador.pegarComando();
+            Comando comando = analisador.pegarComando(tela.pegarEntrada());
             terminado = processarComando(comando);
         }
-        System.out.println("Obrigado por jogar. Ate mais!");
-        
-        //tela.fechar();
+        tela.writeLineTextArea("Obrigado por jogar. Ate mais!");
     }
     
     /**
      * Método que apresenta a localização/ambiente em que o jogador se encontra.
      */
     private void imprimirLocalizacaoAtual(){
-        System.out.println("Voce esta " + ambienteAtual.getDescricao());
-        System.out.println("Voce tem " + movimentos + " movimentos.");
-        System.out.print("Saidas: ");
-        System.out.println(ambienteAtual.getSaidas());
+        tela.writeLineTextArea("Voce esta " + ambienteAtual.getDescricao());
+        tela.writeLineTextArea("Voce tem " + movimentos + " movimentos.");
+        tela.writeLineTextArea("Saidas: ");
+        tela.writeLineTextArea(ambienteAtual.getSaidas());
     }
     
     /**
@@ -185,11 +184,11 @@ public class Jogo {
      */
     private void imprimirBoasVindas()
     {
-        System.out.println();
-        System.out.println("Bem-vindo ao Caca ao Tesouro!");
-        System.out.println("Caca ao Tesouro e um novo jogo de aventura, incrivelmente bacana.");
-        System.out.println("Digite 'ajuda' se voce precisar de ajuda.");
-        System.out.println();
+        tela.writeLineTextArea("");
+        tela.writeLineTextArea("Bem-vindo ao Caca ao Tesouro!");
+        tela.writeLineTextArea("Caca ao Tesouro e um novo jogo de aventura, incrivelmente bacana.");
+        tela.writeLineTextArea("Digite 'ajuda' se voce precisar de ajuda.");
+        tela.writeLineTextArea("");
 
         imprimirLocalizacaoAtual();
     }
@@ -206,7 +205,7 @@ public class Jogo {
         boolean querSair = false;
 
         if(comando.ehDesconhecido()) {
-            System.out.println("Eu nao entendi o que voce disse...");
+            tela.writeLineTextArea("Eu nao entendi o que voce disse...");
             return false;
         }
 
@@ -220,7 +219,7 @@ public class Jogo {
                     irParaAmbiente(comando);
                 }
                 else {
-                    System.out.println("Parece que seus movimentos acabaram, parceiro. Use a bomba, voce tem uma chance.");
+                    tela.writeLineTextArea("Parece que seus movimentos acabaram, parceiro. Use a bomba, voce tem uma chance.");
                 }   break;
             case "sair":
                 querSair = sair(comando);
@@ -247,11 +246,11 @@ public class Jogo {
      */
     private void imprimirAjuda() 
     {
-            System.out.println("Voce esta perdido. Voce esta sozinho. Voce caminha");
-            System.out.println("pela casa.");
-            System.out.println();
-            System.out.println("Suas palavras de comando sao:");
-            System.out.println(analisador.getComandos());
+            tela.writeLineTextArea("Voce esta perdido. Voce esta sozinho. Voce caminha");
+            tela.writeLineTextArea("pela casa.");
+            tela.writeLineTextArea("");
+            tela.writeLineTextArea("Suas palavras de comando sao:");
+            tela.writeLineTextArea(analisador.getComandos());
     }
     
     /**
@@ -268,7 +267,7 @@ public class Jogo {
     {
         if(!comando.temSegundaPalavra()) {
             // se nao ha segunda palavra, nao sabemos pra onde ir...
-            System.out.println("Ir pra onde?");
+            tela.writeLineTextArea("Ir pra onde?");
             return;
         }
 
@@ -279,15 +278,15 @@ public class Jogo {
         proximoAmbiente = ambienteAtual.getAmbiente(direcao);
 
         if (proximoAmbiente == null) {
-            System.out.println("Nao ha passagem!");
+            tela.writeLineTextArea("Nao ha passagem!");
         }
         else {
             boolean usouChave = false;
             
             // Controla o uso da chave mestra
             if(vidaUtilChave != 0) {
-                System.out.println("Voce deseja usar a chave-mestra? (sim/nao)");
-                String confirmacao = analisador.pegarString();
+                tela.writeLineTextArea("Voce deseja usar a chave-mestra? (sim/nao)");
+                String confirmacao = tela.pegarEntrada();
                 if(confirmacao.equals("sim")){
                     usouChave = true;
                     usarChave();
@@ -302,7 +301,7 @@ public class Jogo {
                 boolean emperrada = gerador.nextBoolean();
                 if(emperrada) {
                     proximoAmbiente = ambienteAtual;
-                    System.out.println("A porta esta emperrada.");
+                    tela.writeLineTextArea("A porta esta emperrada.");
                 }
                 movimentos--;
                 tela.setTentativas(Integer.toString(movimentos));
@@ -333,15 +332,13 @@ public class Jogo {
         // Caso o ambiete possua uma dica, apresentar ao jogador e adicionar seu conteúdo à interface gráfica 
         if(item instanceof Dica) {
             Dica d = (Dica) item;
-            System.out.println("Dica encontrada!");
-            System.out.println("Dica: " + d.getDica());
+            tela.writeLineTextArea("Dica encontrada!");
             tela.addDica(d.getDica());
         // Caso o ambiente possua uma chave mestra, apresentá-la ao jogador
         } else if(item instanceof ChaveMestra) {
             ChaveMestra cm = (ChaveMestra) item;
             vidaUtilChave = cm.getVidaUtil();
-            System.out.println("Chave Mestra encontrada!");
-            System.out.println("Usos: " + cm.getVidaUtil());
+            tela.writeLineTextArea("Chave Mestra encontrada!");
             tela.setUsosChave(Integer.toString(cm.getVidaUtil()));
         }
         
@@ -356,11 +353,11 @@ public class Jogo {
     private int usarChave() {
 
         if(vidaUtilChave == 1) {
-            System.out.println("Voce utilizou a chave com sucesso. Infelizmente, ela quebrou, e voce nao podera usa-la novamente.");
+            tela.writeLineTextArea("Voce utilizou a chave com sucesso. Infelizmente, ela quebrou, e voce nao podera usa-la novamente.");
         }
 
         else {
-            System.out.println("Voce utilizou a chave com sucesso.");
+            tela.writeLineTextArea("Voce utilizou a chave com sucesso.");
         }
 
         vidaUtilChave--;
@@ -377,7 +374,7 @@ public class Jogo {
     private boolean sair(Comando comando) 
     {
         if(comando.temSegundaPalavra()) {
-            System.out.println("Sair o que?");
+            tela.writeLineTextArea("Sair o que?");
             return false;
         }
         else {
@@ -401,13 +398,13 @@ public class Jogo {
      */
     private boolean detonar(){
         if (ambienteAtual.possuiItemOculto()){
-            System.out.println("Tesouro encontrado!");
+            tela.writeLineTextArea("Tesouro encontrado!");
             Tesouro t = (Tesouro)ambienteAtual.removeItemOculto();
-            System.out.println("Valor do tesouro: " + t.getValor());
-            System.out.println("Parabens, voce ganhou!!!");
+            tela.writeLineTextArea("Valor do tesouro: " + t.getValor());
+            tela.writeLineTextArea("Parabens, voce ganhou!!!");
         }
         else {
-            System.out.println("Nao foi dessa vez...");
+            tela.writeLineTextArea("Nao foi dessa vez...");
         }
         return true;
     }
@@ -426,7 +423,7 @@ public class Jogo {
             ManipuladorArquivo.escreverArquivo(nomeArquivo, texto);
         }
         catch(IOException e){
-            System.out.println("Falha ao escrever no arquivo: " + e.getMessage());
+            tela.writeLineTextArea("Falha ao escrever no arquivo: " + e.getMessage());
         }
     }
 }

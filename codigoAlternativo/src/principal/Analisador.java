@@ -10,35 +10,35 @@ import java.util.Scanner;
  */
 public class Analisador 
 {
-    private PalavrasComando palavrasDeComando;  
-    private Scanner entrada;        
+    private PalavrasComando palavrasDeComando;
 
     /**
-     * Cria um analisador para ler o que foi digitado no terminal.
+     * Cria um analisador para analisar o que foi digitado na interface gráfica.
      */
     public Analisador() 
     {
         palavrasDeComando = new PalavrasComando();
-        entrada = new Scanner(System.in);
     }
 
     /**
      * Metodo que analisa o comando digitado pelo usuário e verifica se é válido.
-     * Inicialmente, pega a primeira linha e analisa se tem uma ou duas palavras. Em
+     * Inicialmente, pega a entrada e analisa se tem uma ou duas palavras. Em
      * seguida, verifica se a primeira palavra digitada é um comando válido.
      * 
+     * @param entrada entrada digitada pelo usuário que foi repassada pela interface gráfica.
      * @return Objeto Comando válido se a primeira palavra for comando válido, ou
      *         Comando desconhecido se a primeira não for válida.
      */
-    public Comando pegarComando() 
+    
+    public Comando pegarComando(String entrada) 
     {
         String linha;   
         String palavra1 = null;
         String palavra2 = null;
 
-        System.out.print("> ");     
+             
 
-        linha = entrada.nextLine();
+        linha = entrada;
 
         // Verifica se tem uma ou duas palavras, e ignora o resto da linha
         Scanner tokenizer = new Scanner(linha);
@@ -66,14 +66,7 @@ public class Analisador
 
     }
     
-    /**
-     * Método que recebe comando (String) digitada pelo usuário para analisar.
-     * 
-     * @return Comando (String) digitado pelo usuário
-     */
-    public String pegarString(){
-        return entrada.nextLine();
-    }
+    
 
     /**
      * Método que apresenta os comandos válidos para o usuário.
@@ -83,5 +76,7 @@ public class Analisador
     public String getComandos(){
         return palavrasDeComando.getComandos();
     }
+    
+    
 	
 }
